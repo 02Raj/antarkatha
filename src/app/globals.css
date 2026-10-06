@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+ * AntarKatha design tokens.
+ * Contrast notes (WCAG AA, on --paper):
+ *   ink 15.4:1 · ink-muted 5.3:1 · saffron-ink 5.5:1 · forest 9.0:1
+ *   saffron (#B85C27) is ~4.0:1 — use for large text, fills and icons only;
+ *   use saffron-ink for body-size text. copper is decorative only.
+ */
+@theme {
+  --color-paper: #f6f0e3;
+  --color-paper-deep: #ede3cf;
+  --color-surface: #fffdf8;
+  --color-ink: #1c1915;
+  --color-ink-soft: #3a342c;
+  --color-ink-muted: #6b6257;
+  --color-saffron: #b85c27;
+  --color-saffron-ink: #9a4a1e;
+  --color-saffron-wash: #f3e2d2;
+  --color-forest: #23483a;
+  --color-forest-deep: #183328;
+  --color-forest-wash: #dde7df;
+  --color-copper: #c9a678;
+  --color-copper-soft: #e4d3b4;
+  --color-danger: #a13d3d;
+  --color-danger-wash: #f5dfdb;
+
+  --font-serif: var(--font-newsreader), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+
+  --container-reading: 720px;
+  --container-content: 1200px;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --text-display: clamp(2.5rem, 1.6rem + 4vw, 4.75rem);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.02em;
+
+  --animate-fade-up: fade-up 220ms var(--ease-calm) both;
+  --animate-fade-in: fade-in 180ms var(--ease-calm) both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --page-bg: var(--color-paper);
+    --page-fg: var(--color-ink);
+    /* Quiet paper grain, generated in SVG so no image asset is shipped. */
+    --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.33 0 0 0 0 0.2 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--page-bg);
+    background-image: var(--paper-grain);
+    color: var(--page-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: "kern", "liga";
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-saffron-wash);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  [data-theme="dark"] :focus-visible {
+    outline-color: var(--color-copper);
+  }
+
+  a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-saffron-ink);
+  }
+
+  /* A manuscript margin: thin double rule in copper. */
+  .margin-rule {
+    background-image:
+      linear-gradient(var(--color-copper), var(--color-copper)),
+      linear-gradient(var(--color-copper-soft), var(--color-copper-soft));
+    background-size:
+      1px 100%,
+      1px 100%;
+    background-position:
+      0 0,
+      5px 0;
+    background-repeat: no-repeat;
+  }
+
+  .hairline {
+    border-color: color-mix(in oklab, var(--color-copper) 55%, transparent);
+  }
+
+  .prose-reading {
+    font-family: var(--font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.75;
+    color: var(--color-ink-soft);
+  }
+
+  .link-quiet {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+    transition: text-decoration-color 180ms var(--ease-calm);
+  }
+  .link-quiet:hover {
+    text-decoration-color: currentColor;
+  }
+}
