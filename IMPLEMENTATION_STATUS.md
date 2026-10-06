@@ -1,6 +1,6 @@
 # Implementation status
 
-_Last updated: 2026-10-05_
+_Last updated: 2026-10-06_
 
 ## Completed
 
@@ -62,9 +62,18 @@ _Last updated: 2026-10-05_
       JSON-LD (no invented ratings)
 - [x] Public Playwright coverage (desktop + mobile Chromium, axe on home and reader)
 
+### Phase 4 — Reader and library
+
+- [x] Reading toolbar: size, save, scroll progress
+- [x] Guest progress and saves stay in the browser; signed-in saves go to Supabase when the tables exist
+- [x] Bookmarks page and practice dashboard (streak, continue, saved count)
+- [x] Settings for size, type, page colour, listening speed, daily email
+- [x] Private audio route returns a short-lived file URL only when the lesson has audio and the reader may hear it
+- [ ] Hosted audio files are not uploaded yet, so published lessons still say audio is coming
+
 ## In progress
 
-- Phase 4 — Reader, audio, bookmarks, progress merge, library
+- Phase 5 — Admin CMS CRUD
 
 ## Blocked
 
@@ -74,10 +83,9 @@ _Last updated: 2026-10-05_
 
 ## Next
 
-1. Phase 4: full reader (typography, audio player, bookmarks, progress, resume).
-2. Phase 5: admin CMS CRUD connected to Supabase.
-3. Phase 6: commerce + email adapters.
-4. Phase 7: QA + handoff.
+1. Phase 5: admin CMS CRUD connected to Supabase.
+2. Phase 6: commerce + email adapters.
+3. Phase 7: QA + handoff.
 
 ## Verification log
 
@@ -91,4 +99,6 @@ _Last updated: 2026-10-05_
 | 2026-10-05 | `npx playwright test` | 26 passed (desktop + mobile Chromium, axe on home, login, reader)                               |
 | 2026-10-05 | Browser inspect       | Home, explore (URL filters), collection, daily, pricing, about, contact (ack), privacy, paywall, mobile nav, sitemap/robots HTTP 200 |
 
-No git init, commit, remotes, push, sync, publish, or deploy were performed.
+| 2026-10-06 | `npm run typecheck`   | pass after reader, bookmarks, dashboard, settings, audio route                                  |
+| 2026-10-06 | `npm run test`        | 17 files, 59 tests passed                                                                       |
+| 2026-10-06 | eslint on Phase 4 files | pass                                                                                          |

@@ -3,8 +3,19 @@ import { buttonVariants } from "@/components/ui/button";
 import { Notice } from "@/components/ui/feedback";
 import { StructuredContentRenderer } from "@/components/content/structured-content-renderer";
 import { Badge } from "@/components/ui/badge";
+import { ReaderSession } from "@/components/reader/reader-session";
 import { formatMinutes } from "@/lib/utils";
 import type { CatalogLesson } from "@/lib/catalog/types";
+import type { ReaderFont, ReaderTheme } from "@/types/database";
+
+export type ReaderChrome = {
+  signedIn: boolean;
+  bookmarked: boolean;
+  progressPercent: number;
+  fontScale: number;
+  fontFamily: ReaderFont;
+  theme: ReaderTheme;
+};
 
 export function PaywallPanel({ lesson }: { lesson: CatalogLesson }) {
   return (
@@ -35,14 +46,35 @@ export function PublicLesson({
   canReadFull,
   previousSlug,
   nextSlug,
+  reader,
 }: {
   lesson: CatalogLesson;
   canReadFull: boolean;
   previousSlug?: string;
   nextSlug?: string;
+  reader?: ReaderChrome;
 }) {
+  const chrome: ReaderChrome = reader ?? {
+    signedIn: false,
+    bookmarked: false,
+    progressPercent: 0,
+    fontScale: 1,
+    fontFamily: "serif",
+    theme: "sepia",
+  };
   return (
-    <article className="mx-auto max-w-reading px-5 py-12 sm:px-8">
+    <ReaderSession
+      contentId={lesson.id}
+      slug={lesson.slug}
+      title={lesson.title}
+      signedIn={chrome.signedIn}
+      initiallyBookmarked={chrome.bookmarked}
+      initialPercent={chrome.progressPercent}
+      fontScale={chrome.fontScale}
+      fontFamily={chrome.fontFamily}
+      theme={chrome.theme}
+      canReadFull={canReadFull}
+    >
       <nav aria-label="Breadcrumb" className="text-sm text-ink-muted">
         <Link href="/explore" className="link-quiet">
           Library
@@ -70,9 +102,13 @@ export function PublicLesson({
         {lesson.sourceTitle ?? "Source review pending"}. {lesson.sourceLocator}.{" "}
         {lesson.adaptationNote}
       </Notice>
-      <p className="mt-4 text-sm text-ink-muted">
-        {lesson.hasAudio ? "Audio is available on this lesson." : "Audio coming soon."}
-      </p>
+      {lesson.hasAudio && canReadFull ? (
+        <audio className="mt-4 w-full" controls preload="none" src={`/api/audio/${lesson.slug}`}>
+          Audio coming soon.
+        </audio>
+      ) : (
+        <p className="mt-4 text-sm text-ink-muted">Audio coming soon.</p>
+      )}
       {canReadFull ? (
         <div className="mt-10">
           <StructuredContentRenderer blocks={lesson.body} />
@@ -94,6 +130,6 @@ export function PublicLesson({
           </Link>
         ) : null}
       </div>
-    </article>
+    </ReaderSession>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { getDailyLesson } from "@/lib/catalog/queries";
 import { PublicLesson } from "@/components/reader/public-lesson";
+import { getReaderState } from "@/lib/engagement/queries";
 import { Notice } from "@/components/ui/feedback";
 import { Container } from "@/components/ui/layout";
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = pageMetadata({
 
 export default async function DailyPage() {
   const { data, source } = await getDailyLesson();
+  const reader = await getReaderState(data.lesson.id);
   return (
     <>
       <Container className="pt-10">
@@ -22,7 +24,18 @@ export default async function DailyPage() {
           {source === "demo" ? " Showing the demo catalogue until the live desk is seeded." : ""}
         </Notice>
       </Container>
-      <PublicLesson lesson={data.lesson} canReadFull />
+      <PublicLesson
+        lesson={data.lesson}
+        canReadFull
+        reader={{
+          signedIn: reader.signedIn,
+          bookmarked: reader.bookmarked,
+          progressPercent: reader.progressPercent,
+          fontScale: reader.prefs.fontScale,
+          fontFamily: reader.prefs.fontFamily,
+          theme: reader.prefs.readerTheme,
+        }}
+      />
     </>
   );
 }
